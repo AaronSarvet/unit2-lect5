@@ -158,7 +158,7 @@
     "href": "unit2-lect5.html#propensity-matching-5",
     "title": "Propensity-based methods",
     "section": "Propensity matching",
-    "text": "Propensity matching\n\n#Constructing weights for a=1\nfit&lt;-glm(A~L + L^2 + L^3 + L^4+ L^5, data=df2, family=binomial(link=logit))\ndf2$pi&lt;-predict(fit, df2, type=\"response\")\ndf2$W&lt;-df2$A / df2$pi\n\n#Truth\nmean(df2$Y1)\n\n[1] -0.1024334\n\n#Horvitz-Thompson Estimator\nmean(df2$Y*df2$W)\n\n[1] 0.3366922"
+    "text": "Propensity matching\n\n#Constructing weights for a=1\nfit&lt;-glm(A~L + L^2 + L^3 + L^4+ L^5, data=df2, family=binomial(link=logit))\ndf2$pi&lt;-predict(fit, df2, type=\"response\")\ndf2$W&lt;-df2$A / df2$pi\n\n#Truth\nmean(df2$Y1)\n\n[1] -0.1097815\n\n#Horvitz-Thompson Estimator\nmean(df2$Y*df2$W)\n\n[1] 0.2923369"
   },
   {
     "objectID": "unit2-lect5.html#propensity-matching-6",
@@ -179,7 +179,7 @@
     "href": "unit2-lect5.html#propensity-matching-8",
     "title": "Propensity-based methods",
     "section": "Propensity matching",
-    "text": "Propensity matching\n\n#Truth\nmean(treated$Y1)\n\n[1] 0.6875912\n\nmean(treated$Y0)\n\n[1] -0.2741315\n\n#Matched\nmean(df_matched[df_matched$A==1, ]$Y)\n\n[1] 0.6875912\n\nmean(df_matched[df_matched$A==0, ]$Y)\n\n[1] -0.3087207"
+    "text": "Propensity matching\n\n#Truth\nmean(treated$Y1)\n\n[1] 0.6185475\n\nmean(treated$Y0)\n\n[1] -0.3106959\n\n#Matched\nmean(df_matched[df_matched$A==1, ]$Y)\n\n[1] 0.6185475\n\nmean(df_matched[df_matched$A==0, ]$Y)\n\n[1] -0.282476"
   },
   {
     "objectID": "unit2-lect5.html#propensity-matching-9",
@@ -207,7 +207,7 @@
     "href": "unit2-lect5.html#section-3",
     "title": "Propensity-based methods",
     "section": "",
-    "text": "Matching will fail when the positivity conditions fail!\n\n#Truth\nmean(controls$Y1)\n\n[1] -0.3025387\n\nmean(controls$Y0)\n\n[1] -1.291546\n\n#Matched\nmean(df_matched[df_matched$A==1, ]$Y)\n\n[1] -0.3074853\n\nmean(df_matched[df_matched$A==0, ]$Y)\n\n[1] -1.291546"
+    "text": "Matching will fail when the positivity conditions fail!\n\n#Truth\nmean(controls$Y1)\n\n[1] -0.2989745\n\nmean(controls$Y0)\n\n[1] -1.280688\n\n#Matched\nmean(df_matched[df_matched$A==1, ]$Y)\n\n[1] -0.6099733\n\nmean(df_matched[df_matched$A==0, ]$Y)\n\n[1] -1.280688"
   },
   {
     "objectID": "unit2-lect5.html#propensity-score-methods-summary",

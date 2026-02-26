@@ -430,12 +430,12 @@ We have <span class="math display">\[\color{red}{P(A^{a}=a' \mid L^a=l) = I(a'=a
 <span id="cb2-6"><a></a><span class="co">#Truth</span></span>
 <span id="cb2-7"><a></a><span class="fu">mean</span>(df2<span class="sc">$</span>Y1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.1024334</code></pre>
+<pre><code>[1] -0.1097815</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb4"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a></a><span class="co">#Horvitz-Thompson Estimator</span></span>
 <span id="cb4-2"><a></a><span class="fu">mean</span>(df2<span class="sc">$</span>Y<span class="sc">*</span>df2<span class="sc">$</span>W)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.3366922</code></pre>
+<pre><code>[1] 0.2923369</code></pre>
 </div>
 </div>
 </section>
@@ -464,20 +464,20 @@ We have <span class="math display">\[\color{red}{P(A^{a}=a' \mid L^a=l) = I(a'=a
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb7"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a></a><span class="co">#Truth</span></span>
 <span id="cb7-2"><a></a><span class="fu">mean</span>(treated<span class="sc">$</span>Y1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6875912</code></pre>
+<pre><code>[1] 0.6185475</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb9"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a></a><span class="fu">mean</span>(treated<span class="sc">$</span>Y0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.2741315</code></pre>
+<pre><code>[1] -0.3106959</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb11"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a></a><span class="co">#Matched</span></span>
 <span id="cb11-2"><a></a><span class="fu">mean</span>(df_matched[df_matched<span class="sc">$</span>A<span class="sc">==</span><span class="dv">1</span>, ]<span class="sc">$</span>Y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] 0.6875912</code></pre>
+<pre><code>[1] 0.6185475</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb13"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a></a><span class="fu">mean</span>(df_matched[df_matched<span class="sc">$</span>A<span class="sc">==</span><span class="dv">0</span>, ]<span class="sc">$</span>Y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.3087207</code></pre>
+<pre><code>[1] -0.282476</code></pre>
 </div>
 </div>
 </section>
@@ -523,20 +523,20 @@ We have <span class="math display">\[\color{red}{P(A^{a}=a' \mid L^a=l) = I(a'=a
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb16"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a></a><span class="co">#Truth</span></span>
 <span id="cb16-2"><a></a><span class="fu">mean</span>(controls<span class="sc">$</span>Y1)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.3025387</code></pre>
+<pre><code>[1] -0.2989745</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a></a><span class="fu">mean</span>(controls<span class="sc">$</span>Y0)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -1.291546</code></pre>
+<pre><code>[1] -1.280688</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb20"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a></a><span class="co">#Matched</span></span>
 <span id="cb20-2"><a></a><span class="fu">mean</span>(df_matched[df_matched<span class="sc">$</span>A<span class="sc">==</span><span class="dv">1</span>, ]<span class="sc">$</span>Y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -0.3074853</code></pre>
+<pre><code>[1] -0.6099733</code></pre>
 </div>
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb22"><pre class="sourceCode numberSource r number-lines code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a></a><span class="fu">mean</span>(df_matched[df_matched<span class="sc">$</span>A<span class="sc">==</span><span class="dv">0</span>, ]<span class="sc">$</span>Y)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] -1.291546</code></pre>
+<pre><code>[1] -1.280688</code></pre>
 </div>
 </div>
 </section>
