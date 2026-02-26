@@ -1,0 +1,409 @@
+---
+title: "Propensity-based methods"
+
+format:
+  revealjs:
+    slide-level: 2
+    incremental: true
+    slide-number: true
+    controls: true
+    autoScale: true
+    minScale: 0.6
+    maxScale: 1.0
+    center: false
+    margin: 0.05
+    css: styles.css
+
+    html-math-method:
+      method: mathjax
+      url: https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js
+
+    mathjax:
+      macros:
+        independent: "\\perp\\!\\!\\perp"
+---
+## Agenda
+
+- Review from last time
+  - IPW formulation of the g-formula
+  - IPW estimators
+  - Assessing and responding to positivity violations
+- Other propensity-based methods
+  - regression
+  - stratification
+  - matching
+
+## Review
+
+Two equivalent ways of representing the g-formula...
+
+$$\mathbb{E}[Y^a] = \mathbb{E}\Big[\mathbb{E}[Y \mid A=a, L]\Big] = \mathbb{E}\Big[Y \frac{I(A=a)}{P(A=a \mid L)}\Big]$$.
+
+## Review
+
+Motivating two different ways of leveraging parametric models:
+
+- $logit(P(Y=1 \mid A=a, L=l)) = \theta_0 + \theta_1a + \theta_2l+\theta_3al$
+- $logit(P(A=1 \mid L=l)) = \eta_0 + \eta_1l$
+- $$\begin{align} & \mathbb{E}[Y^{a=1}] \\ = & \mathbb{E}\Big[expit(\theta_0 + \theta_1 + \theta_2L+\theta_3L)\Big] \\ = &\mathbb{E}\Big[Y \frac{I(A=1)}{expit(\eta_0 + \eta_1L)}\Big]\end{align}$$
+
+## Review
+
+Motivating two different types of estimators:
+
+- $\frac{1}{n}\sum\limits_{i=1}^n expit(\hat\theta_0 + \hat\theta_1(a=1) + \hat\theta_2L+\hat\theta_3(a=1)L_i) \to \mathbb{E}[Y^{a=1}]$
+- $\frac{1}{n}\sum\limits_{i=1}^n\frac{I(A_i=a=1)}{expit(\hat\eta_0 + \hat\eta_1L_i)} \to \mathbb{E}[Y^{a=1}]$
+- Remember, consistency of our estimators depends on modelling assumptions.
+- **Discussion question**: if you were forced to specify a model for treatment or for the outcome, which would you choose, and why?
+
+## Review
+IPW clarifies why we need positivity:
+
+$$ \mathbb{E}\Big[Y \frac{I(A=a)}{P(A=a \mid L)}\Big]$$
+
+What happens if $P(A=a \mid L) = 0$?
+
+
+## More IPW intuition
+
+$$\begin{align*}
+\mathbb{E}\Big[Y^{a}\Big] =  \mathbb{E}\Big[Y\frac{I(A=a)}{f(A \mid L)}\Big]
+\end{align*}$$
+
+Radon-Nikodym theorem for a change in measure: Let $P^*$ be some arbitrary law that is different from $P$. According to the Radon-Nykodym theorem we have:
+
+$$\mathbb{E}_{\color{red}{P^*}}[Y] = \mathbb{E}_{\color{blue}{P}}\Big[Y \frac{\color{red}{f_{P^*}(Y, A, L)}}{\color{blue}{f_{P}(Y, A, L)}}\Big].$$
+<p class="fragment"> 
+We want to change from the factual law to the counterfactual law of $Y$.
+</p>
+
+## More IPW intuition
+$$\mathbb{E}[Y^a] \equiv \mathbb{E}_{\color{red}{P^*}}[Y] = \mathbb{E}_{\color{blue}{P}}\Big[Y \frac{\color{red}{f_{P^*}(Y, A, L)}}{\color{blue}{f_{P}(Y, A, L)}}\Big].$$
+
+
+
+## More IPW intuition
+
+Let $A^{a}$ denote the variable for the \textit{assigned treatment} under an  regime that fixes treatment to $a$. 
+
+
+<p class="fragment"> 
+$$\begin{align}\color{red}{f_{P^*}(y, a', l) =  P(Y^{a}=y \mid A^a=a', L^a=l) P(A^a=a' \mid L^a=l) P(L^a=l)}\end{align}$$
+</p>
+
+
+<p class="fragment"> 
+$$=\color{blue}{P(Y=y \mid A=a', L=l)} \color{red}{P(A^a=a' \mid L^a=l)} \color{blue}{P(L=l)}$$ 
+</p>
+
+
+## More IPW intuition
+
+**Discussion Question**: What is $\color{red}{P(A^{a}=a' \mid L^a=l)}$?
+
+
+<p class="fragment"> 
+We have $$\color{red}{P(A^{a}=a' \mid L^a=l) = I(a'=a)},$$ i.e., all the probability mass is on the value $a$.
+</p>
+
+<p class="fragment"> 
+$$\color{red}{f_{P^*}(y, a', l)} = \color{blue}{P(Y=y \mid A=a', L=l)} \color{red}{I(a'=a)} \color{blue}{P(L=l)} $$
+</p>
+
+<p class="fragment"> 
+
+$$\color{blue}{f_{P}(y, a', l) =  P(Y=y \mid A=a', L=l) f(a' \mid l) P(L=l)}$$
+</p>
+
+
+## More IPW intuition
+
+So:
+
+
+
+$$\begin{align*}
+    \frac{\color{red}{f_{P^*}(y, a', l)}}{\color{blue}{f_{P}(y, a', l)}} & = \frac{\color{blue}{P(Y=y \mid A=a', L=l)} \color{red}{I(a'=a)} \color{blue}{P(L=l)}}{\color{blue}{P(Y=y \mid A=a', L=l) f_P(a' \mid l) P(L=l)}} \\
+    & = \frac{ \color{red}{I(a'=a)}}{\color{blue}{f_P(a' \mid l)}}
+\end{align*}$$
+
+## More IPW intuition
+
+$$\begin{align*}
+    \mathbb{E}_{\color{red}{P^*}}[Y] = & \mathbb{E}_{\color{blue}{P}}\Big[Y \frac{\color{red}{f_{P^*}(Y, A, L)}}{\color{blue}{f_{P}(Y, A, L)}}\Big] \\
+    = & \mathbb{E}_{\color{blue}{P}}\Big[Y \frac{\color{red}{I(A=a)}}{\color{blue}{f_P(A \mid L)}}\Big]
+\end{align*}$$
+
+## Other Propensity-based methods
+
+A classical result: suppose consistency, positivity hold. Define $$\pi(L) = P(A=1 \mid L).$$ If $$Y^a \perp A \mid L$$ then 
+
+$$Y^a \perp A \mid \pi(L).$$
+Implications: we can match, condition, stratify on the propensity score. 
+
+## Propensity regression
+
+Assume positivity, consistency, exchangeability, and suppose I fit the following regression model:
+
+$$\mathbb{E}[Y \mid a, \pi(l)] = \beta_0 + \beta_1a + \beta_2\pi(l).$$
+
+- **Discussion Question**: Does $\beta_1$ have a causal interpretation under these assumptions alone? If not, what additional assumptions are needed? 
+
+
+## Propensity regression 
+
+What about this model?
+
+$$\mathbb{E}[Y \mid a, \pi(l)] = \beta_0 + \beta_1a + \beta_2\pi(l) + \beta_3a\pi(l).$$
+**Discussion Question**: Suppose the model is correctly specified. What is the causal interpretation of: 
+
+- $\beta_1$
+- $\beta_1 + \beta_2*(0.5)$
+- What are some possible disadvantages of these parameters?
+
+
+## Propensity stratification
+
+When variables are continuous, it is very difficult to correctly specify a parsimonious model for the conditional outcome mean. 
+
+- We could consider including more and more polynomial terms for $\pi(l)$ and all possible interactions ($K$ large):
+- $$\mathbb{E}[Y \mid a, \pi(l)] = \beta_0 + \beta_1a + \sum\limits_{j=1}^K (\theta_j\pi(l)^j + \gamma_ja\pi(l)^j).$$
+- **Discussion Question**: How would this help? How would this hurt?
+
+## Propensity stratification
+
+But what if we took the following approach:
+
+- Define $\pi_{3,k}(L)$ to be an indicator variable that an individual's propensity was in the $k^{th}$ tertile of propensity scores, $\pi(L)$ (e.g., $\pi_{3,1}(L) = 1$ if an individual's propensity was in the lowest third of propensities.)
+- Consider the following model: $$\mathbb{E}[Y \mid a, \pi_{3}(l)] = \beta_0 + \beta_1a + \beta_2\pi_{3,2}(l)+ \beta_3\pi_{3,3}(l) + \beta_4a\pi_{3,2}(l)+ \beta_5a\pi_{3,3}(l).$$
+- **Discussion Question**: Is this model correctly specified?
+- **Discussion Question**: Does $\beta_1$ have a causal interpretation? If not, what additional assumptions are needed?
+- **Discussion Question**: What are some possible disadvantages of these parameters?
+
+## Propensity stratification
+
+When we condition on propensity score *strata*, we can correctly specify models, but we are concerned about residual confounding *within* strata.
+
+- We could consider defining smaller and smaller propensity score strata (i.e., instead of tertiles, we could use quartiles, or quintiles, or...)
+- **Discussion Question**: How would this help?
+- **Discussion Question**: How would this hurt?
+
+## Propensity matching
+
+Consider the following procedure:
+
+- For every treated individual ($A=1$) find an untreated individual ($A=0$) with the same$^*$ propensity $\pi(L)$. Suppose there exists a match for all individuals with ($A=1$). Let $\mathcal{B}_n$ denote the set of indices for individuals in the original sample, for whom a match is found.
+- Consider the following estimator:
+  - $\frac{\sum\limits_{i\in\mathcal{B}_n}I(A_i=1)Y_i}{\sum\limits_{i\in\mathcal{B}_n}I(A_i=1)} - \frac{\sum\limits_{i\in\mathcal{B}_n}I(A_i=0)Y_i}{\sum\limits_{i\in\mathcal{B}_n}I(A_i=0)}.$
+  - Is this estimator consistent for some causal effect?
+  - Is it the marginal ATE? If not, what kind of ATE is it?
+
+## Propensity matching
+
+Matching the treated individuals targets the Average treatment effect **among the treated** (ATT)
+
+$$\mathbb{E}[Y^{a=1} \mid A=1] - \mathbb{E}[Y^{a=0} \mid A=1].$$
+
+- **Discussion Question**: How do we interpret this?
+  - How might this effect be useful in practice?
+- The ATT requires weaker assumptions than the ATE to identify.
+  - **Discussion Question**: Why?
+  
+## Propensity matching
+
+The ATT requires fewer assumptions because, under consistency, we identify $\mathbb{E}[Y^{a=1} \mid A=1]$ for free.
+
+- Partial exchangeability: $Y^{a=0} \perp A \mid L$
+- Partial positivity: $P(A=0 \mid L=l)>0$ for all $l$ with positive probability in the *subpopulation* with $A=1$.
+
+## Propensity matching
+
+```{r}
+#| echo: true
+#| eval: true
+expit <- function(x) exp(x) / (1 + exp(x))
+n <- 10000
+beta <- c(-1, 1, 0.5)
+
+U_L  <- runif(n)
+U_A  <- runif(n)
+U_Y1 <- runif(n)
+U_Y0 <- runif(n)
+
+S <- rbinom(n, 1, 0.7)             
+L <- ifelse(S == 1,
+            qnorm(U_L,  1, 0.75),    
+            qnorm(U_L, -3, 0.5))   
+
+eta <- c(-2, 1)                    
+pi  <- ifelse(L < -1, 0, expit(eta[1] + eta[2]*L))
+A   <- rbinom(n, 1, pi)
+
+Y1 <- qnorm(U_Y1, beta[1] + beta[2]*1 + beta[3]*L, 1)
+Y0 <- qnorm(U_Y0, beta[1] + beta[2]*0 + beta[3]*L, 1)
+Y  <- Y1*A + Y0*(1-A)
+
+df2 <- data.frame(L=L, A=A, pi=pi, Y1=Y1, Y0=Y0, Y=Y, S=S)
+```
+
+## Propensity matching
+
+```{r}
+library(ggplot2)
+
+ggplot(df2, aes(x = pi, fill = factor(A))) +
+  geom_density(alpha = 0.4) +
+  
+  labs(x = "Propensity score", y = "Density", fill = "A") +
+  theme_minimal()
+
+```
+
+## Propensity matching
+
+```{r}
+#| echo: true
+#| eval: true
+
+#Constructing weights for a=1
+fit<-glm(A~L + L^2 + L^3 + L^4+ L^5, data=df2, family=binomial(link=logit))
+df2$pi<-predict(fit, df2, type="response")
+df2$W<-df2$A / df2$pi
+
+#Truth
+mean(df2$Y1)
+
+#Horvitz-Thompson Estimator
+mean(df2$Y*df2$W)
+
+```
+
+## Propensity matching
+
+Nearest neighbor matching:
+```{r}
+#| echo: true
+#| eval: true
+
+treated  <- df2[df2$A == 1, ]
+controls <- df2[df2$A == 0, ]
+
+#Constructing weights for a=1
+matches <- sapply(treated$pi, function(p) {
+  which.min(abs(controls$pi - p))
+})
+
+df_matched<-rbind(treated, controls[matches, ])
+```
+
+## Propensity matching
+
+```{r}
+ggplot(df_matched, aes(x = pi, fill = factor(A))) +
+  geom_density(alpha = 0.4) +
+  coord_cartesian(xlim = range(df2$pi), ylim=c(0, max(density(df2$pi[df2$A == 0])$y))) +
+  labs(x = "Propensity score", y = "Density", fill = "A") +
+  theme_minimal()
+```
+
+
+## Propensity matching
+
+```{r}
+#| echo: true
+#| eval: true
+#Truth
+mean(treated$Y1)
+mean(treated$Y0)
+
+#Matched
+mean(df_matched[df_matched$A==1, ]$Y)
+mean(df_matched[df_matched$A==0, ]$Y)
+```
+
+## Propensity matching
+
+Matching the untreated individuals targets the Average treatment effect **among the untreated** (ATU)
+
+$$\mathbb{E}[Y^{a=1} \mid A=0] - \mathbb{E}[Y^{a=0} \mid A=0].$$
+  
+## Propensity matching
+
+The ATU requires fewer assumptions because, under consistency, we identify $\mathbb{E}[Y^{a=1} \mid A=0]$ for free.
+- Partial exchangeability: $Y^{a=0} \perp A \mid L$
+- Partial positivity: $P(A=1 \mid L=l)>0$ for all $l$ with positive probability in the *subpopulation* with $A=0$.
+
+##
+
+
+```{r}
+library(ggplot2)
+df3<-rbind(treated, controls, controls, controls, controls)
+
+ggplot(df3, aes(x = pi, fill = factor(A))) +
+  geom_density(alpha = 0.4) +
+  
+  labs(x = "Propensity score", y = "Density", fill = "A") +
+  theme_minimal()
+```
+
+##
+
+## Propensity matching
+
+Nearest neighbor matching:
+```{r}
+#| echo: true
+#| eval: true
+
+treated  <- df3[df3$A == 1, ]
+controls <- df3[df3$A == 0, ]
+
+#Constructing weights for a=1
+matches <- sapply(controls$pi, function(p) {
+  which.min(abs(treated$pi - p))
+})
+
+df_matched<-rbind(controls, treated[matches, ])
+```
+
+##
+
+```{r}
+
+ggplot(df_matched, aes(x = pi, fill = factor(A))) +
+  geom_density(alpha = 0.4) +
+  coord_cartesian(xlim = range(df2$pi)) +
+  labs(x = "Propensity score", y = "Density", fill = "A") +
+  theme_minimal()
+```
+##
+
+Matching will fail when the positivity conditions fail!
+```{r}
+#| echo: true
+#| eval: true
+#Truth
+mean(controls$Y1)
+mean(controls$Y0)
+
+#Matched
+mean(df_matched[df_matched$A==1, ]$Y)
+mean(df_matched[df_matched$A==0, ]$Y)
+```
+## Propensity-score methods summary
+- All methods require the same three usual assumptions.
+- Propensity-score regression methods
+  - When we are able to correctly specify the outcome model, we identify causal effects, but...
+    - simple models rarely identify causal effects (residual confounding from model misspecification)
+    - complex models complicate interpretation (conditional effects) and estimation (curse of dimensionality)
+
+## Propensity-score methods summary
+- Propensity matching methods
+  - Require weaker positivity and exchangeability assumptions but...
+    - different matching strategies lead to different estimands with different interpretations
+    - perfect matches (almost) never exist when $L$ is continuous, so must specify a matching method.
+
+  
+
+
